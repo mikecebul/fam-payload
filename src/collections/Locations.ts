@@ -127,8 +127,9 @@ const Locations: CollectionConfig = {
               fields: [
                 {
                   name: "isRecurring",
-                  label: "Recurring Weekly?",
                   type: "checkbox",
+                  label: "Recurring Weekly?",
+                  defaultValue: true,
                 },
                 {
                   name: "dayOfWeek",
@@ -144,7 +145,7 @@ const Locations: CollectionConfig = {
                     { label: "Sunday", value: "sunday" },
                   ],
                   admin: {
-                    // condition: (data) => data?.meetings?.meeting?.dayAndTime?.isRecurring,
+                    condition: (_, { isRecurring }) => isRecurring,
                   },
                 },
                 {
@@ -154,7 +155,7 @@ const Locations: CollectionConfig = {
                     date: {
                       pickerAppearance: "timeOnly",
                     },
-                    condition: (data) => true,
+                    condition: (_, { isRecurring }) => isRecurring,
                   },
                 },
                 {
@@ -164,8 +165,7 @@ const Locations: CollectionConfig = {
                     date: {
                       pickerAppearance: "dayAndTime",
                     },
-                    //   condition: (data) =>
-                    //     !data?.meetings?.meeting?.dayAndTime?.isRecurring,
+                    condition: (_, { isRecurring }) => !isRecurring,
                   },
                 },
               ],
