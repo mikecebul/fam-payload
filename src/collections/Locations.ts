@@ -7,14 +7,15 @@ const Locations: CollectionConfig = {
     beforeChange: [
       async ({ data }) => {
         if (
-          data.address &&
-          (!data.position || Object.keys(data.position).length === 0)
+          data.location.address &&
+          (typeof data.location.position === "undefined" ||
+            Object.keys(data.location.position).length === 0)
         ) {
-          const position = await geocodeAddress(data.address);
-          if (position) {
-            data.position = {
+          const points = await geocodeAddress(data.location.address);
+          if (points) {
+            data.location.position = {
               type: "Point",
-              coordinates: [parseFloat(position.lng), parseFloat(position.lat)],
+              coordinates: [parseFloat(points.lng), parseFloat(points.lat)],
             };
           }
         }
