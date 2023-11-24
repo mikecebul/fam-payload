@@ -3,6 +3,9 @@ import { geocodeAddress } from "../utils/geocoding";
 
 const Locations: CollectionConfig = {
   slug: "locations",
+  access: {
+    read: () => true,
+  },
   hooks: {
     beforeChange: [
       async ({ data }) => {
