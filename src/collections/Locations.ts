@@ -7,9 +7,35 @@ const Locations: CollectionConfig = {
     read: () => true,
   },
   hooks: {
+    afterChange: [
+      async () => {
+        const secret = process.env.REVALIDATION_SECRET;
+        const tag = "locations";
+
+        const revalidatePath = `${
+          process.env.NEXTJS_API
+        }/api/revalidate?secret=${encodeURIComponent(
+          secret
+        )}&tag=${encodeURIComponent(tag)}`;
+
+        try {
+          const response = await fetch(revalidatePath, {
+            method: "GET",
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              `Revalidation failed with status: ${response.status}`
+            );
+          }
+          const responseData = await response.json();
+        } catch (error) {
+          console.error("Revalidation failed:", error);
+        }
+      },
+    ],
     beforeChange: [
       async ({ data }) => {
-        console.log("Data.position:", data.position);
         if (
           data.address &&
           (typeof data.position === "undefined" ||
