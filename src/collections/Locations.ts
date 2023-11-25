@@ -10,13 +10,13 @@ const Locations: CollectionConfig = {
     beforeChange: [
       async ({ data }) => {
         if (
-          data.location.address &&
-          (typeof data.location.position === "undefined" ||
-            Object.keys(data.location.position).length === 0)
+          data.address &&
+          (typeof data.position === "undefined" ||
+            Object.keys(data.position).length === 0)
         ) {
-          const points = await geocodeAddress(data.location.address);
+          const points = await geocodeAddress(data.address);
           if (points) {
-            data.location.position = {
+            data.position = {
               type: "Point",
               coordinates: [parseFloat(points.lng), parseFloat(points.lat)],
             };
@@ -31,23 +31,24 @@ const Locations: CollectionConfig = {
       name: "name",
       type: "text",
       label: "Name",
+      required: true,
     },
     {
-      name: "location",
-      type: "group",
-      label: "Location",
-      fields: [
-        {
-          name: "address",
-          type: "text",
-          label: "Address",
-        },
-        {
-          name: "position",
-          type: "point",
-          label: "Geo",
-        },
-      ],
+      name: "address",
+      type: "text",
+      label: "Address",
+      required: true,
+    },
+    {
+      name: "position",
+      type: "point",
+      label: "Geo Location",
+      admin: {
+        description: ({ value }) =>
+          !value
+            ? "This will fill in automatically from the address entered above."
+            : "",
+      },
     },
     {
       name: "meetings",
