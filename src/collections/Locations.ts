@@ -49,7 +49,7 @@ const Locations: CollectionConfig = {
           if (value[0] === null || value[1] === null) {
             return "This will fill in automatically from the address entered above.";
           } else {
-            return JSON.stringify(value);
+            return;
           }
         },
       },
