@@ -10,13 +10,13 @@ const Locations: CollectionConfig = {
     afterChange: [
       async () => {
         const secret = process.env.REVALIDATION_SECRET;
-        const tag = "locations";
+        const path = "/";
 
         const revalidatePath = `${
           process.env.NEXTJS_API
         }/api/revalidate?secret=${encodeURIComponent(
           secret
-        )}&tag=${encodeURIComponent(tag)}`;
+        )}&path=${encodeURIComponent(path)}}`;
 
         try {
           const response = await fetch(revalidatePath, {
@@ -29,6 +29,7 @@ const Locations: CollectionConfig = {
             );
           }
           const responseData = await response.json();
+          console.log(responseData);
         } catch (error) {
           console.error("Revalidation failed:", error);
         }
