@@ -100,9 +100,14 @@ const Locations: CollectionConfig = {
               ],
             },
             {
-              name: "group",
+              name: "groupName",
               type: "text",
-              label: "Group",
+              label: "Group Name",
+            },
+            {
+              name: "details",
+              type: "text",
+              label: "Details",
             },
             {
               name: "type",
