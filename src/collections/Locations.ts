@@ -9,6 +9,7 @@ const Locations: CollectionConfig = {
   hooks: {
     beforeChange: [
       async ({ data }) => {
+        console.log("Data.position:", data.position);
         if (
           data.address &&
           (typeof data.position === "undefined" ||
@@ -44,10 +45,13 @@ const Locations: CollectionConfig = {
       type: "point",
       label: "Geo Location",
       admin: {
-        description: ({ value }) =>
-          !value
-            ? "This will fill in automatically from the address entered above."
-            : "",
+        description: ({ value }) => {
+          if (value[0] === null || value[1] === null) {
+            return "This will fill in automatically from the address entered above.";
+          } else {
+            return JSON.stringify(value);
+          }
+        },
       },
     },
     {
