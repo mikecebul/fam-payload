@@ -12,15 +12,21 @@ const Locations: CollectionConfig = {
         const secret = process.env.REVALIDATION_SECRET;
         const path = "/";
 
-        const revalidatePath = `${
-          process.env.NEXTJS_API
-        }/api/revalidate?secret=${encodeURIComponent(
-          secret
-        )}&path=${encodeURIComponent(path)}`;
+        const revalidatePath = `${process.env.NEXTJS_API}/api/revalidate`;
+
+        // const revalidatePath = `${
+        //   process.env.NEXTJS_API
+        // }/api/revalidate?secret=${encodeURIComponent(
+        //   secret
+        // )}&path=${encodeURIComponent(path)}`;
 
         try {
           const response = await fetch(revalidatePath, {
-            method: "GET",
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ secret, path }),
           });
 
           if (!response.ok) {
