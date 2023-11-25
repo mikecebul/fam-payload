@@ -16,7 +16,7 @@ const Locations: CollectionConfig = {
           process.env.NEXTJS_API
         }/api/revalidate?secret=${encodeURIComponent(
           secret
-        )}&path=${encodeURIComponent(path)}}`;
+        )}&path=${encodeURIComponent(path)}`;
 
         try {
           const response = await fetch(revalidatePath, {
