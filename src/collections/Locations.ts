@@ -37,18 +37,18 @@ const Locations: CollectionConfig = {
     ],
     beforeChange: [
       async ({ data }) => {
-        if (
-          data.address &&
-          (typeof data.position === "undefined" ||
-            Object.keys(data.position).length === 0)
-        ) {
-          const points = await geocodeAddress(data.address);
-          if (points) {
-            data.position = {
-              type: "Point",
-              coordinates: [parseFloat(points.lng), parseFloat(points.lat)],
-            };
-          }
+        const street = data.address.street;
+        const city = data.address.city;
+        const zipcode = data.address.zipcode;
+        const state = data.address.state;
+        const points = await geocodeAddress(
+          `${street}, ${city}, ${zipcode}, ${state}`
+        );
+        if (points) {
+          data.position = {
+            type: "Point",
+            coordinates: [parseFloat(points.lng), parseFloat(points.lat)],
+          };
         }
         return data;
       },
@@ -63,14 +63,46 @@ const Locations: CollectionConfig = {
     },
     {
       name: "address",
-      type: "text",
+      type: "group",
       label: "Address",
-      required: true,
+      fields: [
+        {
+          name: "street",
+          type: "text",
+          label: "Street",
+          required: true,
+        },
+        {
+          name: "city",
+          type: "text",
+          label: "City",
+          required: true,
+        },
+        {
+          name: "zipcode",
+          type: "text",
+          label: "Zip Code",
+          required: true,
+        },
+        {
+          name: "state",
+          type: "text",
+          label: "State",
+          defaultValue: "MI",
+          required: true,
+          access: {
+            update: () => false,
+          },
+        },
+      ],
     },
     {
       name: "position",
       type: "point",
       label: "Geo Location",
+      access: {
+        update: () => false,
+      },
       admin: {
         description: ({ value }) => {
           if (value[0] === null || value[1] === null) {
@@ -95,6 +127,7 @@ const Locations: CollectionConfig = {
               name: "pathway",
               type: "select",
               label: "Pathway",
+              required: true,
               hasMany: false,
               options: [
                 {
@@ -132,19 +165,32 @@ const Locations: CollectionConfig = {
               ],
             },
             {
-              name: "groupName",
-              type: "text",
-              label: "Group Name",
-            },
-            {
-              name: "details",
-              type: "text",
-              label: "Details",
+              name: "gender",
+              type: "select",
+              label: "Gender",
+              required: true,
+              hasMany: false,
+              defaultValue: "coed",
+              options: [
+                {
+                  label: "Coed",
+                  value: "coed",
+                },
+                {
+                  label: "Women",
+                  value: "women",
+                },
+                {
+                  label: "Men",
+                  value: "men",
+                },
+              ],
             },
             {
               name: "type",
               type: "select",
               label: "Type",
+              required: true,
               hasMany: false,
               options: [
                 {
@@ -166,16 +212,17 @@ const Locations: CollectionConfig = {
               type: "group",
               label: "Day and Time",
               fields: [
-                {
-                  name: "isRecurring",
-                  type: "checkbox",
-                  label: "Recurring Weekly?",
-                  defaultValue: true,
-                },
+                // {
+                //   name: "isRecurring",
+                //   type: "checkbox",
+                //   label: "Recurring Weekly?",
+                //   defaultValue: true,
+                // },
                 {
                   name: "dayOfWeek",
                   label: "Day of the Week",
                   type: "select",
+                  required: true,
                   options: [
                     { label: "Monday", value: "monday" },
                     { label: "Tuesday", value: "tuesday" },
@@ -186,29 +233,30 @@ const Locations: CollectionConfig = {
                     { label: "Sunday", value: "sunday" },
                   ],
                   admin: {
-                    condition: (_, { isRecurring }) => isRecurring,
+                    // condition: (_, { isRecurring }) => isRecurring,
                   },
                 },
                 {
                   name: "timeOnly",
                   type: "date",
+                  required: true,
                   admin: {
                     date: {
                       pickerAppearance: "timeOnly",
                     },
-                    condition: (_, { isRecurring }) => isRecurring,
+                    // condition: (_, { isRecurring }) => isRecurring,
                   },
                 },
-                {
-                  name: "singleDate",
-                  type: "date",
-                  admin: {
-                    date: {
-                      pickerAppearance: "dayAndTime",
-                    },
-                    condition: (_, { isRecurring }) => !isRecurring,
-                  },
-                },
+                // {
+                //   name: "singleDate",
+                //   type: "date",
+                //   admin: {
+                //     date: {
+                //       pickerAppearance: "dayAndTime",
+                //     },
+                //     condition: (_, { isRecurring }) => !isRecurring,
+                //   },
+                // },
               ],
             },
           ],
