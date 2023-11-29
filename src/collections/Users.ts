@@ -4,8 +4,10 @@ const Users: CollectionConfig = {
   slug: "users",
   auth: true,
   access: {
-    read: () => true,
-    create: () => true,
+    create: ({ req: { user } }) => user.role === "admin",
+    read: ({ req: { user }, id }) => user.id === id || user.role === "admin",
+    update: ({ req: { user }, id }) => user.id === id || user.role === "admin",
+    delete: ({ req: { user } }) => user.role === "admin",
   },
   admin: {
     useAsTitle: "email",
@@ -14,6 +16,8 @@ const Users: CollectionConfig = {
     {
       name: "role",
       type: "select",
+      required: true,
+      hasMany: false,
       options: [
         {
           label: "Admin",
@@ -30,9 +34,10 @@ const Users: CollectionConfig = {
       ],
       defaultValue: "user",
       access: {
-        read: () => true,
         create: () => false,
-        // update: ({req: {user}}) => user.roles && user.roles.some((role) => role === 'admin')
+        read: ({ req: { user }, id }) =>
+          user.id === id || user.role === "admin",
+        update: ({ req: { user } }) => user.role === "admin",
       },
     },
   ],
