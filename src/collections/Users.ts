@@ -32,8 +32,8 @@ const Users: CollectionConfig = {
       access: {
         read: () => true,
         create: () => false,
-        update: ({req: {user}}) => user.roles && user.roles.some((role) => role === 'admin')
-      }
+        // update: ({req: {user}}) => user.roles && user.roles.some((role) => role === 'admin')
+      },
     },
   ],
 };
