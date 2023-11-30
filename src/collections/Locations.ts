@@ -37,13 +37,10 @@ const Locations: CollectionConfig = {
     ],
     beforeChange: [
       async ({ data }) => {
-        const street = data.address.street;
-        const city = data.address.city;
-        const zipcode = data.address.zipcode;
-        const state = data.address.state;
-        const points = await geocodeAddress(
-          `${street}, ${city}, ${zipcode}, ${state}`
-        );
+        const street = data.street;
+        const city = data.city;
+        const state = data.state;
+        const points = await geocodeAddress(`${street}, ${city}, ${state}`);
         if (points) {
           data.position = {
             type: "Point",
@@ -62,39 +59,37 @@ const Locations: CollectionConfig = {
       required: true,
     },
     {
-      name: "address",
-      type: "group",
-      label: "Address",
-      fields: [
-        {
-          name: "street",
-          type: "text",
-          label: "Street",
-          required: true,
-        },
-        {
-          name: "city",
-          type: "text",
-          label: "City",
-          required: true,
-        },
-        {
-          name: "zipcode",
-          type: "text",
-          label: "Zip Code",
-          required: true,
-        },
-        {
-          name: "state",
-          type: "text",
-          label: "State",
-          defaultValue: "MI",
-          required: true,
-          access: {
-            update: () => false,
-          },
-        },
-      ],
+      name: "street",
+      type: "text",
+      label: "Street Address",
+      required: true,
+    },
+    {
+      name: "city",
+      type: "text",
+      label: "City",
+      required: true,
+    },
+    {
+      name: "state",
+      type: "relationship",
+      relationTo: "states",
+      label: "State",
+      required: false,
+    },
+    {
+      name: "newState",
+      type: "relationship",
+      relationTo: "states",
+      label: "New State",
+      required: true,
+    },
+    {
+      name: "county",
+      type: "relationship",
+      relationTo: "counties",
+      label: "County",
+      required: true,
     },
     {
       name: "position",
@@ -206,6 +201,29 @@ const Locations: CollectionConfig = {
                   value: "zoom",
                 },
               ],
+            },
+            {
+              name: "zoomLink",
+              type: "text",
+              label: "Zoom Link",
+              validate: (value, { siblingData }) => {
+                if (siblingData.type === "in-person") {
+                  return true;
+                }
+                if (typeof value !== "string" || value.trim() === "") {
+                  return "Zoom Link is required.";
+                }
+
+                const zoomLinkPattern = new RegExp(
+                  "^https:\\/\\/(\\w+\\.)?zoom\\.us\\/j\\/\\d+((\\?pwd=)?[\\w\\d]+)?$",
+                  "i"
+                );
+
+                if (!zoomLinkPattern.test(value)) {
+                  return "Please enter a valid Zoom link.";
+                }
+                return true;
+              },
             },
             {
               name: "dayAndTime",

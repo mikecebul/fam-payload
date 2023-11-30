@@ -8,6 +8,8 @@ import { buildConfig } from "payload/config";
 
 import Users from "./collections/Users";
 import Locations from "./collections/Locations";
+import States from "./collections/States";
+import Counties from "./collections/Counties";
 
 export default buildConfig({
   admin: {
@@ -15,7 +17,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: slateEditor({}),
-  collections: [Users, Locations],
+  collections: [Users, States, Counties, Locations],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },
