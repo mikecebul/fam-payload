@@ -99,8 +99,7 @@ export interface Location {
   name: string;
   street: string;
   city: string;
-  state?: (string | null) | State;
-  newState: string | State;
+  state: string | State;
   county: string | County;
   /**
    * @minItems 2
