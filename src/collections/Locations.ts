@@ -72,9 +72,10 @@ const Locations: CollectionConfig = {
     },
     {
       name: "state",
-      type: "text",
+      type: "relationship",
+      relationTo: "states",
       label: "State",
-      required: false,
+      required: true,
     },
     {
       name: "county",
