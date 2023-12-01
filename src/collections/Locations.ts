@@ -1,5 +1,6 @@
 import { CollectionConfig } from "payload/types";
 import { geocodeAddress } from "../utils/geocoding";
+import { format } from "date-fns";
 
 const Locations: CollectionConfig = {
   slug: "locations",
@@ -107,172 +108,173 @@ const Locations: CollectionConfig = {
       label: "List of Meetings",
       fields: [
         {
-          name: "meeting",
-          type: "group",
-          label: "Meeting",
-          fields: [
+          name: "dayOfWeek",
+          label: "Day of the Week",
+          type: "select",
+          required: true,
+          options: [
+            { label: "Monday", value: "monday" },
+            { label: "Tuesday", value: "tuesday" },
+            { label: "Wednesday", value: "wednesday" },
+            { label: "Thursday", value: "thursday" },
+            { label: "Friday", value: "friday" },
+            { label: "Saturday", value: "saturday" },
+            { label: "Sunday", value: "sunday" },
+          ],
+        },
+        {
+          name: "timeOnly",
+          type: "date",
+          required: true,
+          admin: {
+            date: {
+              pickerAppearance: "timeOnly",
+            },
+          },
+        },
+        {
+          name: "pathway",
+          type: "select",
+          label: "Pathway",
+          required: true,
+          hasMany: false,
+          options: [
             {
-              name: "pathway",
-              type: "select",
-              label: "Pathway",
-              required: true,
-              hasMany: false,
-              options: [
-                {
-                  label: "AA",
-                  value: "aa",
-                },
-                {
-                  label: "NA",
-                  value: "na",
-                },
-                {
-                  label: "OA",
-                  value: "oa",
-                },
-                {
-                  label: "Talking Circle",
-                  value: "talking-circle",
-                },
-                {
-                  label: "Dharma Recovery",
-                  value: "dharma-recovery",
-                },
-                {
-                  label: "SMART Recovery",
-                  value: "smart-recovery",
-                },
-                {
-                  label: "Celbrate Recovery",
-                  value: "celebrate-recovery",
-                },
-                {
-                  label: "None",
-                  value: "none",
-                },
-              ],
+              label: "AA",
+              value: "aa",
             },
             {
-              name: "gender",
-              type: "select",
-              label: "Gender",
-              required: true,
-              hasMany: false,
-              defaultValue: "coed",
-              options: [
-                {
-                  label: "Coed",
-                  value: "coed",
-                },
-                {
-                  label: "Women",
-                  value: "women",
-                },
-                {
-                  label: "Men",
-                  value: "men",
-                },
-              ],
+              label: "NA",
+              value: "na",
             },
             {
-              name: "type",
-              type: "select",
-              label: "Type",
-              required: true,
-              hasMany: false,
-              options: [
-                {
-                  label: "In Person",
-                  value: "in-person",
-                },
-                {
-                  label: "Hybrid",
-                  value: "hybrid",
-                },
-                {
-                  label: "Zoom",
-                  value: "zoom",
-                },
-              ],
+              label: "OA",
+              value: "oa",
             },
             {
-              name: "zoomLink",
-              type: "text",
-              label: "Zoom Link",
-              validate: (value, { siblingData }) => {
-                if (siblingData.type === "in-person") {
-                  return true;
-                }
-                if (typeof value !== "string" || value.trim() === "") {
-                  return "Zoom Link is required.";
-                }
-
-                const zoomLinkPattern = new RegExp(
-                  "^https:\\/\\/(\\w+\\.)?zoom\\.us\\/j\\/\\d+((\\?pwd=)?[\\w\\d]+)?$",
-                  "i"
-                );
-
-                if (!zoomLinkPattern.test(value)) {
-                  return "Please enter a valid Zoom link.";
-                }
-                return true;
-              },
+              label: "Al-Anon",
+              value: "al-anon",
             },
             {
-              name: "dayAndTime",
-              type: "group",
-              label: "Day and Time",
-              fields: [
-                // {
-                //   name: "isRecurring",
-                //   type: "checkbox",
-                //   label: "Recurring Weekly?",
-                //   defaultValue: true,
-                // },
-                {
-                  name: "dayOfWeek",
-                  label: "Day of the Week",
-                  type: "select",
-                  required: true,
-                  options: [
-                    { label: "Monday", value: "monday" },
-                    { label: "Tuesday", value: "tuesday" },
-                    { label: "Wednesday", value: "wednesday" },
-                    { label: "Thursday", value: "thursday" },
-                    { label: "Friday", value: "friday" },
-                    { label: "Saturday", value: "saturday" },
-                    { label: "Sunday", value: "sunday" },
-                  ],
-                  admin: {
-                    // condition: (_, { isRecurring }) => isRecurring,
-                  },
-                },
-                {
-                  name: "timeOnly",
-                  type: "date",
-                  required: true,
-                  admin: {
-                    date: {
-                      pickerAppearance: "timeOnly",
-                    },
-                    // condition: (_, { isRecurring }) => isRecurring,
-                  },
-                },
-                // {
-                //   name: "singleDate",
-                //   type: "date",
-                //   admin: {
-                //     date: {
-                //       pickerAppearance: "dayAndTime",
-                //     },
-                //     condition: (_, { isRecurring }) => !isRecurring,
-                //   },
-                // },
-              ],
+              label: "Nar-Anon",
+              value: "nar-anon",
+            },
+            {
+              label: "Talking Circle",
+              value: "talking-circle",
+            },
+            {
+              label: "All Recovery",
+              value: "all-recovery",
+            },
+            {
+              label: "Celbrate Recovery",
+              value: "celebrate-recovery",
+            },
+            {
+              label: "Dharma Recovery",
+              value: "dharma-recovery",
+            },
+            {
+              label: "SMART Recovery",
+              value: "smart-recovery",
+            },
+            {
+              label: "Other",
+              value: "other",
             },
           ],
         },
+        {
+          name: "gender",
+          type: "select",
+          label: "Gender",
+          required: true,
+          hasMany: false,
+          defaultValue: "coed",
+          options: [
+            {
+              label: "Coed",
+              value: "coed",
+            },
+            {
+              label: "Women",
+              value: "women",
+            },
+            {
+              label: "Men",
+              value: "men",
+            },
+          ],
+        },
+        {
+          name: "type",
+          type: "select",
+          label: "Type",
+          required: true,
+          hasMany: false,
+          options: [
+            {
+              label: "In Person",
+              value: "in-person",
+            },
+            {
+              label: "Hybrid",
+              value: "hybrid",
+            },
+            {
+              label: "Zoom",
+              value: "zoom",
+            },
+          ],
+        },
+        {
+          name: "zoomLink",
+          type: "text",
+          label: "Zoom Link",
+          required: true,
+          validate: (value, { siblingData }) => {
+            if (siblingData.type === "in-person") {
+              return true;
+            }
+            if (typeof value !== "string" || value.trim() === "") {
+              return "Zoom Link is required.";
+            }
+
+            const zoomLinkPattern = new RegExp(
+              "^https:\\/\\/(\\w+\\.)?zoom\\.us\\/j\\/\\d+((\\?pwd=)?[\\w\\d]+)?$",
+              "i"
+            );
+
+            if (!zoomLinkPattern.test(value)) {
+              return "Please enter a valid Zoom link.";
+            }
+            return true;
+          },
+          admin: {
+            condition: (_, { type }) => type !== "in-person",
+          },
+        },
       ],
+      admin: {
+        components: {
+          RowLabel: ({ data, index }: { data: any; index?: any }) => {
+            if (data.dayOfWeek && data.timeOnly && !!index) {
+              const formattedIndex = String(index).padStart(2, "0");
+              const time = format(new Date(data.timeOnly), "h:mm a");
+              const capitalize = (s: string) =>
+                s && s[0].toUpperCase() + s.slice(1);
+              const day = capitalize(data.dayOfWeek);
+              return `${day} at ${time} - ${formattedIndex}`;
+            }
+            if (!!index) {
+              const formattedIndex = String(index).padStart(2, "0");
+              return "Meeting " + formattedIndex;
+            }
+            return "Meeting";
+          },
+        },
+      },
     },
   ],
 };
