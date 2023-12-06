@@ -12,6 +12,10 @@ import States from "./collections/States";
 import Counties from "./collections/Counties";
 
 export default buildConfig({
+ serverURL: process.env.PAYLOAD_PUBLIC_BASE_DNS,
+ rateLimit: {
+   trustProxy: true,
+ },
   admin: {
     user: Users.slug,
     bundler: webpackBundler(),
