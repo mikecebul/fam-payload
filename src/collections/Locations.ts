@@ -14,7 +14,7 @@ const Locations: CollectionConfig = {
         const path = "/";
 
         const revalidatePath = `${
-          process.env.NEXTJS_BASE_URL
+          process.env.NEXT_PUBLIC_BASE_URL
         }/api/revalidate?secret=${encodeURIComponent(
           secret
         )}&path=${encodeURIComponent(path)}`;
