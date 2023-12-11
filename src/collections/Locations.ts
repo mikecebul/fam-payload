@@ -92,15 +92,6 @@ const Locations: CollectionConfig = {
       access: {
         update: () => false,
       },
-      admin: {
-        description: ({ value }) => {
-          if (value[0] === null || value[1] === null) {
-            return "This will fill in automatically from the address entered above.";
-          } else {
-            return;
-          }
-        },
-      },
     },
     {
       name: "meetings",
