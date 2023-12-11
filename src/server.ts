@@ -1,5 +1,6 @@
 import express from "express";
 import payload from "payload";
+import nodemailer from "nodemailer";
 
 require("dotenv").config();
 const app = express();
@@ -10,8 +11,23 @@ app.get("/", (_, res) => {
 });
 
 const start = async () => {
+  const transport = await nodemailer.createTransport({
+    host: "smtp.resend.com",
+    secure: true,
+    port: 465,
+    auth: {
+      user: "resend",
+      pass: process.env.RESEND_API_KEY,
+    },
+  });
+
   // Initialize Payload
   await payload.init({
+    email: {
+      fromName: "MikeCebul",
+      fromAddress: "mike@mikecebul.dev",
+      transport,
+    },
     secret: process.env.PAYLOAD_SECRET,
     express: app,
     onInit: async () => {

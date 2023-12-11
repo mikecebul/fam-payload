@@ -12,10 +12,19 @@ import States from "./collections/States";
 import Counties from "./collections/Counties";
 
 export default buildConfig({
- serverURL: process.env.PAYLOAD_PUBLIC_BASE_DNS,
- rateLimit: {
-   trustProxy: true,
- },
+  serverURL: process.env.PAYLOAD_PUBLIC_BASE_URL,
+  rateLimit: {
+    trustProxy: true,
+  },
+  cors:
+    process.env.NODE_ENV === "production"
+      ? [process.env.NEXTJS_BASE_URL]
+      : ["http://localhost:3000", "*"],
+  csrf: [
+    // whitelist of domains to allow cookie auth from
+    "http://localhost:3000",
+    "https://your-other-frontend-app.com",
+  ],
   admin: {
     user: Users.slug,
     bundler: webpackBundler(),

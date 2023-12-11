@@ -1,10 +1,21 @@
 import { CollectionConfig } from "payload/types";
+import { PrimaryActionEmailHtml } from "../emails/primary-action-email";
 
 const Users: CollectionConfig = {
   slug: "users",
-  auth: true,
+  auth: {
+    verify: {
+      generateEmailHTML: ({ token }) => {
+        return PrimaryActionEmailHtml({
+          actionLabel: "verify your account",
+          buttonText: "Verify Account",
+          href: `${process.env.NEXTJS_BASE_URL}/verify-email?token=${token}`,
+        });
+      },
+    },
+  },
   access: {
-    create: ({ req: { user } }) => user.role === "admin",
+    create: () => true,
     read: ({ req: { user }, id }) => user.id === id || user.role === "admin",
     update: ({ req: { user }, id }) => user.id === id || user.role === "admin",
     delete: ({ req: { user } }) => user.role === "admin",
@@ -13,6 +24,14 @@ const Users: CollectionConfig = {
     useAsTitle: "email",
   },
   fields: [
+    {
+      name: "firstName",
+      type: "text",
+    },
+    {
+      name: "lastName",
+      type: "text",
+    },
     {
       name: "role",
       type: "select",
@@ -36,7 +55,7 @@ const Users: CollectionConfig = {
       access: {
         create: () => false,
         read: ({ req: { user }, id }) =>
-          user.id === id || user.role === "admin",
+          user?.id === id || user?.role === "admin",
         update: ({ req: { user } }) => user.role === "admin",
       },
     },
